@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🔧 Fixed Bookmarklet for Your Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: 0 auto; }
+        .step { background: #f0f8ff; padding: 15px; margin: 15px 0; border-radius: 8px; }
+        .error { background: #ffe6e6; padding: 15px; margin: 15px 0; border-radius: 8px; border-left: 5px solid #ff0000; }
+        .solution { background: #e6ffe6; padding: 15px; margin: 15px 0; border-radius: 8px; border-left: 5px solid #00aa00; }
+        textarea { width: 100%; height: 250px; font-family: monospace; font-size: 12px; }
+        .code { background: #f4f4f4; padding: 10px; border-radius: 5px; font-family: monospace; word-break: break-all; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Fixed Bookmarklet for Your Chatbot</h1>
+    
+    <div class="error">
+        <h2>❌ Problem Identified</h2>
+        <p><strong>Issue:</strong> Your HTML file contains the chatbot code inside a <code>&lt;script&gt;</code> tag, but the bookmarklet was looking for HTML elements like <code>&lt;div&gt;</code>.</p>
+        <p><strong>Result:</strong> The script downloads but doesn't execute the chatbot code properly.</p>
+    </div>
+
+    <div class="solution">
+        <h2>✅ Fixed Solution</h2>
+        <p><strong>This new bookmarklet:</strong></p>
+        <ul>
+            <li>Downloads your HTML file from GitHub</li>
+            <li>Extracts the JavaScript code from the <code>&lt;script&gt;</code> tags</li>
+            <li>Executes the chatbot code directly on the Power BI page</li>
+            <li>Handles all the injection properly</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2>🚀 NEW WORKING BOOKMARKLET</h2>
+        <p><strong>Replace YOUR_GITHUB_URL with your actual GitHub raw URL:</strong></p>
+        <textarea>javascript:(function(){
+    // 🔥 REPLACE with your GitHub Raw URL
+    var chatbotURL = 'https://raw.githubusercontent.com/YOUR-USERNAME/powerbi-chatbot/main/sharepoint-auto-injector.html';
+    
+    console.log('🤖 Loading Power BI Chatbot from GitHub...');
+    
+    // Check if on correct Power BI page
+    if (!window.location.href.includes('app.powerbi.com/groups/me/apps/0201219b-480c-4bbc-bad5-2d47df08f957/reports')) {
+        alert('⚠️ This chatbot only works on your specific Power BI report page!');
+        return;
+    }
+    
+    // Remove existing chatbot if any
+    var existing = document.getElementById('sp-pbi-auto-chatbot');
+    if (existing) existing.remove();
+    
+    // Fetch and execute chatbot
+    fetch(chatbotURL)
+    .then(response => {
+        if (!response.ok) throw new Error('Failed to fetch: ' + response.status);
+        return response.text();
+    })
+    .then(html => {
+        console.log('✅ HTML loaded from GitHub');
+        
+        // Extract JavaScript from script tags
+        var tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        var scripts = tempDiv.querySelectorAll('script');
+        
+        if (scripts.length > 0) {
+            console.log('🚀 Found ' + scripts.length + ' script(s), executing chatbot code...');
+            
+            // Execute each script
+            for (var i = 0; i < scripts.length; i++) {
+                var script = scripts[i];
+                if (script.innerHTML.trim()) {
+                    try {
+                        // Create new script element and execute
+                        var newScript = document.createElement('script');
+                        newScript.innerHTML = script.innerHTML;
+                        document.head.appendChild(newScript);
+                        console.log('✅ Script ' + (i+1) + ' executed');
+                    } catch (e) {
+                        console.error('❌ Error executing script ' + (i+1) + ':', e);
+                    }
+                }
+            }
+            
+            // Wait a moment then check if chatbot appeared
+            setTimeout(() => {
+                var chatbot = document.getElementById('sp-pbi-auto-chatbot');
+                if (chatbot) {
+                    console.log('🎉 Chatbot successfully loaded!');
+                    alert('✅ Power BI Chatbot loaded! Try saying "reset all filters"');
+                } else {
+                    console.log('⚠️ Chatbot code executed but element not found');
+                    alert('⚠️ Chatbot code loaded. If you don\'t see it, check browser console for details.');
+                }
+            }, 1000);
+            
+        } else {
+            console.error('❌ No script tags found in HTML');
+            alert('❌ No chatbot code found in the file');
+        }
+    })
+    .catch(err => {
+        console.error('❌ Failed to load chatbot:', err);
+        alert('❌ Failed to load chatbot from GitHub: ' + err.message);
+    });
+})();</textarea>
+    </div>
+
+    <div class="step">
+        <h2>🔍 Debug Version (Use This First)</h2>
+        <p><strong>Try this debug version to see what's happening:</strong></p>
+        <textarea>javascript:(function(){
+    // 🔥 REPLACE with your GitHub Raw URL
+    var chatbotURL = 'https://raw.githubusercontent.com/YOUR-USERNAME/powerbi-chatbot/main/sharepoint-auto-injector.html';
+    
+    console.log('🤖 DEBUG: Loading Power BI Chatbot from GitHub...');
+    console.log('🌐 URL:', chatbotURL);
+    console.log('📍 Current page:', window.location.href);
+    
+    // Check if on correct Power BI page (relaxed check for debugging)
+    if (!window.location.href.includes('app.powerbi.com')) {
+        alert('⚠️ Not on Power BI page. Current: ' + window.location.hostname);
+        return;
+    }
+    
+    console.log('✅ Page check passed');
+    
+    // Fetch and execute chatbot
+    fetch(chatbotURL)
+    .then(response => {
+        console.log('📡 Response status:', response.status);
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.text();
+    })
+    .then(html => {
+        console.log('📄 HTML length:', html.length);
+        console.log('📄 HTML preview:', html.substring(0, 200) + '...');
+        
+        // Extract JavaScript from script tags
+        var tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        var scripts = tempDiv.querySelectorAll('script');
+        
+        console.log('🔍 Found scripts:', scripts.length);
+        
+        if (scripts.length > 0) {
+            for (var i = 0; i < scripts.length; i++) {
+                var script = scripts[i];
+                console.log('📜 Script ' + (i+1) + ' length:', script.innerHTML.length);
+                
+                if (script.innerHTML.trim()) {
+                    try {
+                        console.log('🚀 Executing script ' + (i+1) + '...');
+                        eval(script.innerHTML);
+                        console.log('✅ Script ' + (i+1) + ' executed successfully');
+                    } catch (e) {
+                        console.error('❌ Script ' + (i+1) + ' error:', e);
+                    }
+                }
+            }
+            
+            // Check result
+            setTimeout(() => {
+                var chatbot = document.getElementById('sp-pbi-auto-chatbot');
+                console.log('🔍 Chatbot element found:', !!chatbot);
+                if (chatbot) {
+                    console.log('🎉 SUCCESS: Chatbot loaded!');
+                    alert('✅ SUCCESS: Chatbot loaded and visible!');
+                } else {
+                    console.log('⚠️ Chatbot element not found after execution');
+                    // Try to find any element that might be the chatbot
+                    var possibleChatbots = document.querySelectorAll('[id*="chatbot"], [class*="chatbot"], [id*="pbi"], [class*="pbi"]');
+                    console.log('🔍 Possible chatbot elements:', possibleChatbots.length);
+                    alert('⚠️ Check browser console (F12) for detailed debug info');
+                }
+            }, 2000);
+            
+        } else {
+            console.error('❌ No script tags found');
+            alert('❌ No JavaScript code found in the HTML file');
+        }
+    })
+    .catch(err => {
+        console.error('❌ Fetch error:', err);
+        alert('❌ Error: ' + err.message + '\n\nCheck:\n1. GitHub URL is correct\n2. File is public\n3. Internet connection');
+    });
+})();</textarea>
+    </div>
+
+    <div class="step">
+        <h2>📝 Setup Instructions</h2>
+        <ol>
+            <li><strong>Choose the DEBUG version first</strong> to see what's happening</li>
+            <li><strong>Replace YOUR-USERNAME</strong> with your actual GitHub username</li>
+            <li><strong>Copy the entire code</strong> (including "javascript:" at the start)</li>
+            <li><strong>Save as bookmark</strong>:
+                <ul>
+                    <li>Right-click bookmark bar → "Add page"</li>
+                    <li>Name: "DEBUG Power BI Chatbot"</li>
+                    <li>URL: Paste the debug code</li>
+                </ul>
+            </li>
+            <li><strong>Test on Power BI page</strong></li>
+            <li><strong>Open browser console</strong> (F12 → Console tab) to see debug messages</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h2>🔧 What This Fixes</h2>
+        <p><strong>Original Problem:</strong> Your HTML file contains chatbot code in <code>&lt;script&gt;</code> tags, not as HTML elements.</p>
+        <p><strong>New Solution:</strong></p>
+        <ul>
+            <li>✅ Extracts JavaScript code from your HTML file</li>
+            <li>✅ Executes the chatbot initialization code</li>
+            <li>✅ Provides detailed console logging for debugging</li>
+            <li>✅ Checks for the correct chatbot element ID: <code>sp-pbi-auto-chatbot</code></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2>🎯 After Testing</h2>
+        <p>Once the DEBUG version works:</p>
+        <ol>
+            <li><strong>Use the regular version</strong> (first bookmarklet) for daily use</li>
+            <li><strong>Share with other users</strong> - just replace the GitHub URL</li>
+            <li><strong>Update anytime</strong> by editing the HTML file on GitHub</li>
+        </ol>
+    </div>
+
+</body>
+</html>
